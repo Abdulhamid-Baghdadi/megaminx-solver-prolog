@@ -4,6 +4,14 @@ A Prolog program that solves the **Megaminx**, the 12-faced dodecahedral cousin 
 It turns the step-by-step human solving method into **116 sub-goals**. For each sub-goal, a **breadth-first search** runs over a restricted move set that includes multi-move macro operators ("special moves").
 The repository also contains a sticker-matching **heuristic** for informed search (RBFS).
 
+### ▶ [Try it in your browser](https://abdulhamid-baghdadi.github.io/megaminx-solver-prolog/)
+
+<p align="center">
+  <a href="https://abdulhamid-baghdadi.github.io/megaminx-solver-prolog/"><img src="docs/images/gui.png" alt="The web GUI: a 3D Megaminx, playback controls and the list of 116 stages" width="100%"></a>
+</p>
+
+<sub>The web GUI: scramble a 3D Megaminx (or turn it by hand), solve it with the human method, and replay the solution move by move or stage by stage.</sub>
+
 <p align="center">
   <img src="docs/images/progression.jpg" alt="Photos of the physical Megaminx at selected sub-goals, from the white star to the final stage" width="100%">
 </p>
@@ -47,8 +55,18 @@ rotate(Stage, Moves, State, Goal) :-
 
 ## Results
 
-- A scramble of 55 random moves is solved in about **23 minutes** with SWI-Prolog. The console prints every stage, its moves and the cube state.
-- The final move list is checked by replaying it on the scrambled cube.
+- On the 56-move test scramble in `mytest.pl`, stages 1–115 take a few minutes per heavy stage in SWI-Prolog (stage 95 alone takes about 3.5 minutes), and about **5 seconds** in the web GUI's JavaScript port.
+- **Stage 116 does not finish** on that scramble, or on most others. It may only use `u` and `sp16`, which twist corners but cannot move last-layer edges or corners into place, and no earlier goal places those pieces. (The group's last commit is "116 taking so long".)
+- The web GUI therefore ends with an extra **finish** step built from the group's own macros: edges with `sp12`/`sp13`, corners with `sp14`/`sp15`, then the corner twists done as on the slides (repeat `sp16`, turn `u`). With it, the test scramble and random scrambles end fully solved.
+
+## Web GUI
+
+The GUI in [`docs/`](docs/) runs the solver in the browser:
+
+- [`tools/extract_prolog.py`](tools/extract_prolog.py) turns the Prolog facts (the 14 moves as 132-sticker permutations, the 16 macros, the 116 goal patterns and the per-stage move lists) into `docs/data/megaminx.json`. Nothing is re-typed by hand.
+- [`docs/js/solver.js`](docs/js/solver.js) searches each stage in the same order as Prolog's backtracking. On 30 sampled stages it returned the same moves as the original program running in SWI-Prolog.
+- [`docs/js/geometry.js`](docs/js/geometry.js) works out where the 132 stickers sit on a dodecahedron from the move permutations alone, then checks that every move is a rigid rotation.
+- Two quirks of the source are reproduced as Prolog runs them: goal 115 is a rule whose `;`/`,` precedence leaves only its first branch, and stage 66 has no `cand/2` clause (line 83 repeats stage 65).
 
 ## Running it
 

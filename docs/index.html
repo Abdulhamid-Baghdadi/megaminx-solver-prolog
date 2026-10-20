@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Megaminx Solver</title>
+  <meta name="description" content="A 3D Megaminx that runs the Prolog human-method solver in your browser: 116 stages, macro moves and step-by-step playback.">
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+    { "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    } }
+  </script>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Megaminx Solver</h1>
+      <p class="sub">The Prolog human-method solver, running in your browser: 116 stages, each found by breadth-first search over a small set of moves and macro moves.</p>
+    </div>
+    <a class="repo" href="https://github.com/Abdulhamid-Baghdadi/megaminx-solver-prolog">Source on GitHub ↗</a>
+  </header>
+
+  <main>
+    <section class="stage-view">
+      <div id="view" aria-label="3D Megaminx, drag to rotate"></div>
+      <div class="hud">
+        <span id="now-stage">Scrambled</span>
+        <span id="now-move"></span>
+      </div>
+      <div class="playback">
+        <button id="first" title="Back to the scramble" aria-label="Back to the scramble">⏮</button>
+        <button id="prev-stage" title="Previous stage" aria-label="Previous stage">⏪</button>
+        <button id="prev" title="One move back" aria-label="One move back">◀</button>
+        <button id="play" class="primary" title="Play" aria-label="Play">▶</button>
+        <button id="next" title="One move forward" aria-label="One move forward">▶|</button>
+        <button id="next-stage" title="Next stage" aria-label="Next stage">⏩</button>
+        <label class="speed">Speed <input id="speed" type="range" min="1" max="10" value="5"></label>
+      </div>
+      <input id="scrub" type="range" min="0" max="0" value="0" aria-label="Position in the solution">
+      <p class="hint">Drag to rotate · scroll to zoom</p>
+    </section>
+
+    <aside>
+      <div class="card">
+        <h2>1 · Scramble</h2>
+        <div class="row">
+          <button id="demo">Test scramble</button>
+          <button id="random">Random</button>
+          <label class="inline"><input id="random-n" type="number" min="1" max="200" value="30"> moves</label>
+          <button id="reset" class="ghost">Solved cube</button>
+        </div>
+        <p class="note" id="scramble-note"></p>
+        <details>
+          <summary>Turn faces by hand</summary>
+          <div id="turns" class="turns"></div>
+        </details>
+      </div>
+
+      <div class="card">
+        <h2>2 · Solve</h2>
+        <button id="solve" class="primary wide">Solve with the human method</button>
+        <div class="progress"><div id="bar"></div></div>
+        <p class="note" id="solve-note">Runs the same search as the Prolog program, stage by stage.</p>
+      </div>
+
+      <div class="card stages">
+        <h2>3 · Stages</h2>
+        <ol id="stages"></ol>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    Moves, goals and per-stage move lists are extracted from the Prolog source by <code>tools/extract_prolog.py</code>;
+    the sticker layout is derived from the move permutations. Group project, winter term 2020/21.
+  </footer>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
